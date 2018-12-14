@@ -21,13 +21,13 @@ int main( int argc, char *argv[]){
   key_t key = ftok("control.c", 'R');
   int shm = shmget(key, 256, 0644 | IPC_CREAT);
   int sem = semget(key, 1, 0644 | IPC_CREAT);
-  
+
   if(!strcmp(arg, "-c")){ // creating story
-    semctl(sem, 0, SETVAL, 1); //<- ima be honest i have no idea if this is correct
+    semctl(sem, 0, SETVAL, 1);
     open("story.txt", O_CREAT | O_RDWR | O_TRUNC);
     printf("Created the semaphore and shared memory.\n");
   }
-  
+
   if(!strcmp(arg, "-r")){ //removing story
       if (semctl(sem, 0, GETVAL)) { //waiing for semahpore to be open
         shmctl(shm, IPC_RMID, NULL);
@@ -40,12 +40,12 @@ int main( int argc, char *argv[]){
         printf("Removed the semaphore, the story, and the shared memory.\n");
       }
   }
-  
+
   if(!strcmp(arg, "-v")){ //viewing story
       int f = open("story.txt", O_RDONLY);
       char content[256];
       read(f, content, 256);
       printf("The story:\n%s\n\n", content);
   }
-  
+
 }
