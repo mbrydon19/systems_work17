@@ -9,11 +9,11 @@
 
 
 union semun {
-    int  val;    /* Value for SETVAL */
+    int              val;    /* Value for SETVAL */
     struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
     unsigned short  *array;  /* Array for GETALL, SETALL */
     struct seminfo  *__buf;  /* Buffer for IPC_INFO
-                                    (Linux-specific) */
+                                (Linux-specific) */
 };
 
 int main( int argc, char *argv[]){
@@ -22,10 +22,12 @@ int main( int argc, char *argv[]){
   if(!strcmp(arg, "-c")){ // creating story
     int shm = shmget(key, 256, 0644 | IPC_CREAT | IPC_EXCL);
     int sem = semget(key, 1, 0644 | IPC_CREAT | IPC_EXCL);
-    semctl(sem, 0, SETVAL, 1);
-    char * file_path;
-    strcat(file_path, getcwd());
-    strcat(file_path, "story.txt");
-    open(file_path, O_CREAT | O_RDWR | O_TRUNC);
+    semctl(sem, 0, SETVAL, 1); //<- ima be honest i have no idea if this is correct
+    open("story.txt", O_CREAT | O_RDWR | O_TRUNC);
+    printf("Created the semaphore and shared memory.");
+  }
+  if(!strcmp(arg, "-r")){ //removing story
+      
+      
   }
 }
