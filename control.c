@@ -8,19 +8,20 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-union semun {
-    int              val;    /* Value for SETVAL */
-    struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
-    unsigned short  *array;  /* Array for GETALL, SETALL */
-    struct seminfo  *__buf;  /* Buffer for IPC_INFO
-                                (Linux-specific) */
-};
+// union semun {
+//     int              val;    /* Value for SETVAL */
+//     struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
+//     unsigned short  *array;  /* Array for GETALL, SETALL */
+//     struct seminfo  *__buf;  /* Buffer for IPC_INFO
+//                                 (Linux-specific) */
+// };
 
 int main( int argc, char *argv[]){
   char * arg = argv[1];
-  key_t key = ftok("control.c", 'R');
-  int shm = shmget(key, 256, 0644 | IPC_CREAT);
-  int sem = semget(key, 1, 0644 | IPC_CREAT);
+  key_t s_key = ftok("control.c", 'S');
+  key_t m_key = ftok("control.c", 'R');
+  int shm = shmget(m_key, 256, 0644 | IPC_CREAT);
+  int sem = semget(s_key, 1, 0644 | IPC_CREAT);
 
   if(!strcmp(arg, "-c")){ // creating story
     semctl(sem, 0, SETVAL, 1);
