@@ -14,9 +14,9 @@ int main(){
   if (semctl(sem, 0, GETVAL)){
     //down the semaphore
     struct sembuf * sb_down;
-    sb.sem_num = 0;
-    sb.sem_op = -1;
-    semop(sem, 1, sb_down);
+    sb_down->sem_num = 0;
+    sb_down->sem_op = -1;
+    semop(sem, sb_down, 1);
     //get and print last line
     char * last_line[256];
     shmat(key, last_line, 256);
@@ -30,10 +30,12 @@ int main(){
     write(file, next_line, 256);
     //put next line into shared memory
     int shm = shmget(key, 256, IPC_EXCL);
-    shmat(shm, )
+    char * str = shmat(shm, (void *)0, 0);
+    strcpy(str, *next_line);
     //up the semaphore
     struct sembuf * sb_up;
-    sb.sem_num = 0;
-    sb.sem_op = 1;
-    semop(sem, 1, sb_up);
+    sb_up->sem_num = 0;
+    sb_up->sem_op = 1;
+    semop(sem, sb_up, 1);
   }
+}
