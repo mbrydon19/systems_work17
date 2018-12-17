@@ -16,9 +16,7 @@ int main(){
   if (semctl(sem, 0, GETVAL)){
     //down the semaphore
     struct sembuf * sb_down;
-    sb_down->sem_num = 0;
-    sb_down->sem_op = -1;
-    semop(sem, sb_down, 1);
+    semop(sem, sb_down, -1);
     //get and print last line
     char * last_line = malloc(256);
     shmat(m_key, last_line, 256);
@@ -29,6 +27,7 @@ int main(){
     scanf("%s", next_line);
     //write next line to story file
     int file = open("story.txt", O_WRONLY);
+    printf("%s", next_line);
     write(file, next_line, 256);
     //put next line into shared memory
     int shm = shmget(m_key, 256, IPC_EXCL);
@@ -36,8 +35,6 @@ int main(){
     strcpy(str, next_line);
     //up the semaphore
     struct sembuf * sb_up;
-    sb_up->sem_num = 0;
-    sb_up->sem_op = 1;
     semop(sem, sb_up, 1);
   }
 }

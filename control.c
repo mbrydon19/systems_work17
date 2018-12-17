@@ -8,13 +8,13 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// union semun {
-//     int              val;    /* Value for SETVAL */
-//     struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
-//     unsigned short  *array;  /* Array for GETALL, SETALL */
-//     struct seminfo  *__buf;  /* Buffer for IPC_INFO
-//                                 (Linux-specific) */
-// };
+union semun {
+     int              val;    /* Value for SETVAL */
+     struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
+     unsigned short  *array;  /* Array for GETALL, SETALL */
+     struct seminfo  *__buf;  /* Buffer for IPC_INFO
+                                 (Linux-specific) */
+};
 
 int main( int argc, char *argv[]){
   char * arg = argv[1];
@@ -25,7 +25,7 @@ int main( int argc, char *argv[]){
 
   if(!strcmp(arg, "-c")){ // creating story
     semctl(sem, 0, SETVAL, 1);
-    open("story.txt", O_CREAT | O_RDWR | O_TRUNC);
+    open("story.txt", O_CREAT | O_RDWR | O_TRUNC, 0644);
     printf("Created the semaphore and shared memory.\n");
   }
 
@@ -44,9 +44,13 @@ int main( int argc, char *argv[]){
 
   if(!strcmp(arg, "-v")){ //viewing story
       int f = open("story.txt", O_RDONLY);
-      char content[256];
-      read(f, content, 256);
-      printf("The story:\n%s\n\n", content);
+      if (f != -1 ) {
+        char content[256];
+        read(f, content, 256);
+        printf("The story:\n%s\n\n", content);
+      }
+      else {
+          printf("There is no story right now.\n");
+      }
   }
-
 }
